@@ -30,7 +30,7 @@ in writeShellApplication {
    cat ${raw}/jonesforth.f - | ${raw}/bin/jonesforth
   '';
 
-  passthru.unwrapped = raw;
+  derivationArgs.passthru.unwrapped = raw;
 
   meta = {
     homepage = "https://github.com/nornagon/jonesforth";
