@@ -14,9 +14,8 @@ in {
       let
         pkgPath = basePath + "/${name}/package.nix";
       in
-        builtins.trace "checking package: ${pkgPath}"
-          (if type == "directory" && pathExists pkgPath
-           then builtins.trace "package found: ${pkgPath}" (pkgs.callPackage pkgPath extraArgs)
-           else {}))
+        (if type == "directory" && pathExists pkgPath
+         then builtins.trace "package found: ${pkgPath}" (pkgs.callPackage pkgPath extraArgs)
+         else {}))
     (readDir basePath);
 }
