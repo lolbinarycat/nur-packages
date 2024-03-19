@@ -3,7 +3,8 @@
 }:
 let
   inherit (lib.attrsets) mapAttrs;
-  inherit (builtins) readDir pathExists;
+  inherit (lib.lists) foldl;
+  inherit (builtins) readDir pathExists attrNames isAttrs;
   #dirToPkgs = name: type:
 in {
   # Add your library functions here
@@ -18,4 +19,25 @@ in {
          then builtins.trace "package found: ${pkgPath}" (pkgs.callPackage pkgPath extraArgs)
          else {}))
     (readDir basePath);
+
+  attrsets = lib.attrsets // rec {
+    # utility function to tell what changed between two attrsets
+    # useful for wrapping your head around certain aspects of self-referential lazyness.
+    # example: pkgs.lib.attrsets.diff npkgs.openssl.bin npkgs.openssl.dev
+    diff = a: b: foldl
+      (x: y: x // y) { }
+      (map
+        # yes, parenthesizing a and b is needed.
+        (name: let aa = (a)."${name}" or null;
+                   bb = (b)."${name}" or null;
+               in
+                 if aa == bb
+                 then { }
+                 else { "${name}" =
+                          (if isAttrs aa && isAttrs bb
+                           then diff aa bb
+                           else bb); })
+                   
+        (attrNames (a // b)));
+  };
 }
