@@ -1,9 +1,11 @@
 { pkgs
-, lib ? pkgs.lib
+, lib
 }:
 let
-  inherit (lib.attrsets) mapAttrs;
-  inherit (lib.lists) foldl;
+  inherit (pkgs.lib) filterAttrs;
+  inherit (pkgs.lib.attrsets) mapAttrs;
+  inherit (pkgs.lib.lists) foldl elem;
+  inherit (pkgs.lib.strings) hasPrefix;
   inherit (builtins) readDir pathExists attrNames isAttrs;
   #dirToPkgs = name: type:
 in {
@@ -20,7 +22,7 @@ in {
          else {}))
     (readDir basePath);
 
-  attrsets = lib.attrsets // rec {
+  attrsets = rec {
     # utility function to tell what changed between two attrsets
     # useful for wrapping your head around certain aspects of self-referential lazyness.
     # example: pkgs.lib.attrsets.diff npkgs.openssl.bin npkgs.openssl.dev
@@ -37,7 +39,11 @@ in {
                           (if isAttrs aa && isAttrs bb
                            then diff aa bb
                            else bb); })
-                   
         (attrNames (a // b)));
+    # filter an attrset so it only has keys starting with `pre`
+    withPrefix = pre: filterAttrs (name: _: hasPrefix pre name);
   };
+
+  #lists.uniqueLazy = foldl (acc: e: if elem e acc then acc else acc ++ [ e ]) [];
+  testers = pkgs.callPackage ./test { inherit lib; };
 }
