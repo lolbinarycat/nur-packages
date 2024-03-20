@@ -29,7 +29,8 @@ in rec {
     } ''
       echo -e "checking if url exists:\t${u}"
       # disable ssl check because nix hides certs
-      curl --insecure --fail -ILXHEAD ${u}
+      # timeout to stop this from hanging forever
+      curl --max-time 300 --insecure --fail -ILXHEAD ${u}
       touch $out
   '';
 
