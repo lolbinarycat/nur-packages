@@ -41,4 +41,5 @@ in rec {
   checkMetaUrlsPkgPrefix = pre:
     checkMetaUrls (pkgs.lib.recurseIntoAttrs (withPrefix pre
       (pkgs)));
+
 }

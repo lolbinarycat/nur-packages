@@ -18,5 +18,6 @@
         pkgs = import nixpkgs { inherit system; };
       });
       packages = forAllSystems (system: nixpkgs.lib.filterAttrs (_: v: nixpkgs.lib.isDerivation v) self.legacyPackages.${system});
+      lib = self.packages."${builtins.currentSystem}".lib;
     };
 }
