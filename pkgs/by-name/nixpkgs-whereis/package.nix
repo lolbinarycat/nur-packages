@@ -9,14 +9,14 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "nixpkgs-whereis";
-  version = "1.2.2";
+  version = "1.2.3";
 
   src = fetchFromGitea {
     domain = "git.envs.net";
     owner = "binarycat";
     repo = "nixpkgs-whereis";
     rev = finalAttrs.version;
-    hash = "sha256-R74bshQjcbnDoVxULH0vRcxNYc3VTxQRvR7f+oxdKHs=";
+    hash = "sha256-CZokiob077hNf/ipKWQL1bo+8dXoLcpT748xFoQRMbI=";
   };
 
   nativeBuildInputs = [ makeWrapper fish nix coreutils ];
